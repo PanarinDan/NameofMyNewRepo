@@ -7,7 +7,7 @@ import openai
 user_api_key = st.sidebar.text_input("OpenAI API key", type="password")
 
 # Initialize the OpenAI client
-client = openai.OpenAI(api_key=user_api_key)
+openai.api_key = user_api_key
 prompt = """Act as an AI assistant to summarize news articles.
             You will receive a data of the news and you will 
             summarize it using vocabulary suitable for a high 
@@ -56,13 +56,13 @@ if st.button("Summarize"):
 
 
 try:
-    completion = client.Completion.create(**params)
+    completion = openai.Completion.create(**params)
     summary = completion.choices[0].text
     st.write(summary)
 except Exception as e:
     st.error(f"Error during API request: {e}")
 
 print("Params:", params)
-completion = client.Completion.create(**params)
+completion = openai.Completion.create(**params)
 
 print("API Response:", completion)
