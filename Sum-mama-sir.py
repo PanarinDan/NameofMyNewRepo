@@ -10,7 +10,7 @@ user_api_key = st.sidebar.text_input("OpenAI API key", type="password")
 client = openai.OpenAI(api_key=user_api_key)
 prompt = """Act as an AI assistant to summarize news articles.
             You will receive a data of the news and you will 
-            summarize it using vocaabulary suitable for a high 
+            summarize it using vocabulary suitable for a high 
             schooler.
         """ 
 
@@ -53,6 +53,7 @@ if st.button("Summarize"):
     summary = completion.choices[0].text
     # display the summary
     st.write(summary)
+
 
 try:
     completion = client.Completion.create(**params)
