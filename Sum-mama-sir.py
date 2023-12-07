@@ -17,7 +17,7 @@ prompt = """Act as an AI assistant to summarize news articles.
 # set the title of the app
 st.title("Sum Mama Sir")
 # set the subtitle of the app
-st.subheader("Summarize news articles using OpenAI's GPT-3.5")
+st.subheader("Summarize news articles using OpenAI's GPT-3.5-turbo.")
 # set input text
 input_text = st.text_input("Enter news article URL")
 
