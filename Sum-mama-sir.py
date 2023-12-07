@@ -21,6 +21,17 @@ st.subheader("Summarize news articles using OpenAI's GPT-3.5-turbo.")
 # set input text
 input_text = st.text_input("Enter news article URL")
 
+# set the parameters for the API
+params = {
+    "prompt": prompt,
+    "max_tokens": 64,
+    "temperature": 0.5,
+    "top_p": 1,
+    "frequency_penalty": 0.5,
+    "presence_penalty": 0.5,
+    "stop": ["\n", " Article:"]
+}
+
 # if the user has entered a URL and clicked the button
 if st.button("Summarize"):
     # get the URL
@@ -31,21 +42,11 @@ if st.button("Summarize"):
     soup = BeautifulSoup(html, "html.parser")
     # get the text from the HTML
     text = soup.get_text()
-    # set the prompt
-    prompt = f"""Summarize the following news article:
-                {text}
-                Summarize the article using vocabulary suitable for a high schooler.
-            """
-    # set the parameters for the completion
-    params = {
-        "prompt": prompt,
-        "max_tokens": 64,
-        "temperature": 0.5,
-        "top_p": 1,
-        "frequency_penalty": 0.5,
-        "presence_penalty": 0.5,
-        "stop": ["\n", " Article:"]
-    }
+    # update the prompt in params
+    params["prompt"] = f"""Summarize the following news article:
+                        {text}
+                        Summarize the article using vocabulary suitable for a high schooler.
+                    """
     # get the completion from the API
     completion = openai.Completion.create(**params)
     # set the summary
