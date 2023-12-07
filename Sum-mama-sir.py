@@ -1,46 +1,54 @@
-import streamlit
-import pandas
+import streamlit as st
+import requests
+from bs4 import BeautifulSoup
 import openai
 
-# get the API from sidebar called OpenAI API key
-openai.api_key = streamlit.secrets["openai_api_key"]
+# Get the API key from the sidebar called OpenAI API key
+user_api_key = st.sidebar.text_input("OpenAI API key", type="password")
 
-# set the roles for the AI
-# set the user to be the me
-ai = "AI:"
-user = "Me:"
+# Initialize the OpenAI client
+client = openai.OpenAI(api_key=user_api_key)
+prompt = """Act as an AI assistant to summarize news articles.
+            You will receive a data of the news and you will 
+            summarize it using vocaabulary suitable for a high 
+            schooler.
+        """ 
 
-# set the default prompt
-prompt = """Act as an AI summarizer for English news. You will receive url 
-            for the news you need to summarize and you should summarize it's 
-            with a vocabulary that suitable for high school students.
+# set the title of the app
+st.title("Sum Mama Sir")
+# set the subtitle of the app
+st.subheader("Summarize news articles using OpenAI's GPT-3.5")
+# set input text
+input_text = st.text_input("Enter news article URL")
+
+# if the user has entered a URL and clicked the button
+if st.button("Summarize"):
+    # get the URL
+    url = input_text
+    # get the HTML from the URL
+    html = requests.get(url).text
+    # parse the HTML using Beautiful Soup
+    soup = BeautifulSoup(html, "html.parser")
+    # get the text from the HTML
+    text = soup.get_text()
+    # set the prompt
+    prompt = f"""Summarize the following news article:
+                {text}
+                Summarize the article using vocabulary suitable for a high schooler.
             """
-# set the title
-streamlit.title("Summarizer")
-
-# set uyser input
-user_input = streamlit.text_input("Enter the url for the news you want to summarize:")
-
-# set the button
-if streamlit.button("Summarize"):
-    # pull news data from url
-    news = pandas.read_html(user_input)
-    
-    # push the news to the AI
-    prompt = prompt + "\n" + news[0][0][0]
-
-    # set the messages so far
-    messages_so_far = [
-        {
-            "AI": user,
-            "Me": prompt
-        },]
-    
-    # set the response
-    response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=messages_so_far)
-    
-    # show response to client
-    streamlit.write(response)
-
+    # set the parameters for the completion
+    params = {
+        "prompt": prompt,
+        "max_tokens": 64,
+        "temperature": 0.5,
+        "top_p": 1,
+        "frequency_penalty": 0.5,
+        "presence_penalty": 0.5,
+        "stop": ["\n", " Article:"]
+    }
+    # get the completion from the API
+    completion = client.Completion.create(**params)
+    # set the summary
+    summary = completion.choices[0].text
+    # display the summary
+    st.write(summary)
