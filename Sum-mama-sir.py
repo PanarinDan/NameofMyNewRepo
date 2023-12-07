@@ -47,7 +47,7 @@ if st.button("Summarize"):
         "stop": ["\n", " Article:"]
     }
     # get the completion from the API
-    completion = client.Completion.create(**params)
+    completion = openai.Completion.create(**params)
     # set the summary
     summary = completion.choices[0].text
     # display the summary
