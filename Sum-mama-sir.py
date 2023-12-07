@@ -52,3 +52,15 @@ if st.button("Summarize"):
     summary = completion.choices[0].text
     # display the summary
     st.write(summary)
+
+try:
+    completion = client.Completion.create(**params)
+    summary = completion.choices[0].text
+    st.write(summary)
+except Exception as e:
+    st.error(f"Error during API request: {e}")
+
+print("Params:", params)
+completion = client.Completion.create(**params)
+
+print("API Response:", completion)
